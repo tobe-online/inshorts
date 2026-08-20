@@ -7,7 +7,7 @@ import ScoreStat from "./ScoreStat";
  * Renders any section from the payload. `bars` = stacked label/value/bar rows,
  * `columns` = large numerals side by side. Unknown ids still render.
  */
-export default function SectionCard({ section, barTone }: { section: Section; barTone?: string }) {
+export default function SectionCard({ section, barTone }: { section: Section; barTone?: string | undefined }) {
   return (
     <Card>
       <CardTitle tooltip={section.tooltip}>{section.title}</CardTitle>

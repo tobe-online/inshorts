@@ -54,11 +54,24 @@ export interface UpstreamProfile {
   assessment_date?: string | null;
   window_days?: number | null;
   compliance_risk?: Record<string, number | null> | null;
+  platform_performance?: {
+    platform?: string;
+    handle?: string;
+    followers?: number | null;
+    posts?: number | null;
+    engagementRate?: number | null;
+    avgViews?: number | null;
+  }[] | null;
   meta?: {
     source?: string;
     trust_profile_available?: boolean;
     unavailable_fields?: string[];
   } | null;
+  /** schema_version 3 published breakdown blocks. */
+  integrity?: Record<string, unknown> | null;
+  evidence?: Record<string, unknown> | null;
+  wow?: Record<string, unknown> | null;
+  scores?: Record<string, unknown> | null;
   recent_trust_events?: {
     occurred_at?: string;
     severity?: string;
@@ -81,7 +94,9 @@ export function isUpstreamPayload(json: unknown): json is UpstreamProfile {
  */
 export function normaliseUnified(json: unknown): UpstreamProfile {
   const o = (json ?? {}) as Record<string, any>;
-  if (o["schema_version"] !== 2) return o as UpstreamProfile;
+  const version = o["schema_version"];
+  // v2 and v3 share every block below; v3 adds integrity/evidence/wow.
+  if (version !== 2 && version !== 3) return o as UpstreamProfile;
   const bcts = o["bcts"] ?? {};
   const scores = o["scores"] ?? {};
   const gc = scores["governance_components"] ?? {};
@@ -120,7 +135,7 @@ export function normaliseUnified(json: unknown): UpstreamProfile {
           evidence_freshness: ff["evidence_freshness"] ?? null,
           content_freshness: ff["content_freshness"] ?? null,
           fatigue_risk: ff["fatigue_risk"] ?? null,
-          raw: ff["raw"] ?? ff,
+          raw: { ...ff, ...(ff["raw"] ?? {}) },
         }
       : null,
     content_overview: o["content_overview"] ?? null,
@@ -129,14 +144,18 @@ export function normaliseUnified(json: unknown): UpstreamProfile {
     assessment_date: assessment["date"] ?? null,
     window_days: assessment["window"]?.days ?? null,
     compliance_risk: o["compliance_risk"] ?? null,
+    platform_performance: o["platform_performance"] ?? null,
     recent_trust_events: o["recent_trust_events"] ?? [],
     meta: o["meta"] ?? null,
+    integrity: o["integrity"] ?? null,
+    evidence: o["evidence"] ?? null,
+    wow: o["wow"] ?? null,
+    scores: scores ?? null,
   };
 }
 
 const num = (v: unknown): number | undefined =>
   typeof v === "number" && Number.isFinite(v) ? v : undefined;
-const round = (v: number) => Math.round(v * 10) / 10;
 
 function bandTone(band?: string | null): Tone | undefined {
   switch ((band ?? "").toLowerCase()) {
@@ -157,7 +176,7 @@ function bandTone(band?: string | null): Tone | undefined {
 function metric(id: string, label: string, value: unknown, extra: Partial<Metric> = {}): Metric | null {
   const v = num(value);
   if (v === undefined) return null;
-  return { id, label, value: round(v), ...extra };
+  return { id, label, value: Math.round(v), ...extra };
 }
 
 export function adaptUpstream(raw: UpstreamProfile, fallbackPlatform: Platform): TrustProfile {
@@ -194,15 +213,15 @@ export function adaptUpstream(raw: UpstreamProfile, fallbackPlatform: Platform):
   const links = explicitLinks.length ? explicitLinks : derivedLinks;
 
   const mix = raw.trust_action_mix ?? {};
-  const languages =
+  const languages = (
     raw.languages?.length
       ? raw.languages
       : Object.entries(raw.language_mix ?? {}).map(([label, count]) => ({
           label,
           count: Number(count) || 0,
-        }));
+        }))
+  ).slice().sort((a, b) => b.count - a.count);
 
-  const co = raw.compliance_risk ?? {};
   const overview = raw.content_overview ?? {};
 
   // ---- sections -------------------------------------------------------
@@ -226,7 +245,7 @@ export function adaptUpstream(raw: UpstreamProfile, fallbackPlatform: Platform):
   if (gqMetrics.length) {
     sections.push({
       id: "governance_quality",
-      title: num(tp.q_score) !== undefined ? `Governance Quality (Q) ${round(tp.q_score as number)}/100` : "Governance Quality (Q)",
+      title: num(tp.q_score) !== undefined ? `Governance Quality (Q) ${Math.round(tp.q_score as number)}/100` : "Governance Quality (Q)",
       layout: "columns",
       footnote:
         "Q is the recency-weighted average of Asset Quality Scores (AQS) across all eligible assets.",
@@ -234,42 +253,71 @@ export function adaptUpstream(raw: UpstreamProfile, fallbackPlatform: Platform):
     });
   }
 
-  const complianceMetrics = [
-    metric("compliance_score", "Compliance Score", co["compliance_score"], {
-      caption: `${num(co["compliant"]) ?? 0} compliant · ${num(co["partially_compliant"]) ?? 0} partial · ${num(co["non_compliant"]) ?? 0} non-compliant`,
-    }),
-    metric("verified_assets", "Assets Verified", co["verified"], {
-      max: num(co["verified"]) || 100,
-      caption: `${num(co["sponsored"]) ?? 0} sponsored · ${num(co["sponsored_compliant"]) ?? 0} sponsored compliant`,
-    }),
-  ].filter(Boolean) as Metric[];
-  if (complianceMetrics.length) {
-    sections.push({ id: "compliance_risk", title: "Compliance & Risk", layout: "bars", metrics: complianceMetrics });
-  }
+  // ---- I / V / W breakdown cards ---------------------------------------
+  // schema_version 3 publishes integrity/evidence/wow blocks directly; older
+  // exports only carry headline scores, so the sub-components are derived.
+  const integrityBlock = raw.integrity ?? null;
+  const evidenceBlock = raw.evidence ?? null;
+  const wowBlock = raw.wow ?? null;
 
-  const reach = [
-    metric("engagement_followers", "Engagement Rate (followers)", overview["engagement_rate_followers"], {
-      max: 10,
-      caption: `${num(overview["followers"]) ?? 0} followers`,
-    }),
-    metric("engagement_views", "Engagement Rate (views)", overview["engagement_rate_views"], { max: 10 }),
-    metric("posts_per_week", "Posts per Week", overview["posts_per_week"], {
-      max: 7,
-      caption: `${num(overview["posts_tracked"]) ?? 0} posts tracked of ${num(overview["media_count"]) ?? 0}`,
-    }),
-  ].filter(Boolean) as Metric[];
-  if (reach.length) {
-    sections.push({ id: "content_overview", title: "Content & Reach", layout: "bars", metrics: reach });
-  }
+  const iRows = integrityBlock ? publishedIntegrityRows(integrityBlock) : buildIntegrityRows(raw);
+  sections.push({
+    id: "integrity_breakdown",
+    title: scoreTitle("Integrity Intelligence (I)", num(integrityBlock?.["i_score"]) ?? tp.i_score),
+    layout: "bars",
+    metrics: iRows,
+    footnote: integrityBlock
+      ? "Published sub-components from the creator trust service."
+      : "Sub-components derived from the published action mix and recent trust events.",
+  });
+
+  const vRows = evidenceBlock ? publishedEvidenceRows(evidenceBlock) : buildEvidenceRows(raw, ffRaw);
+  sections.push({
+    id: "evidence_breakdown",
+    title: scoreTitle(
+      "Evidence Confidence (V)",
+      num(evidenceBlock?.["v"]) ?? tp.v_score ?? averageOf(vRows),
+    ),
+    layout: "bars",
+    metrics: vRows,
+    footnote: evidenceBlock
+      ? "Published sub-components from the evidence corpus."
+      : "Sub-components derived from the published evidence corpus.",
+  });
+
+  const wowScore = num(raw.scores?.["wow_creative"]) ?? null;
+  sections.push({
+    id: "wow_breakdown",
+    title: scoreTitle("WoW Creative Intelligence (W)", wowScore),
+    layout: "bars",
+    metrics: wowBlock ? publishedWowRows(wowBlock) : buildWowRows(raw),
+    footnote: wowBlock
+      ? "Creative intelligence across asset quality, resonance and delivery."
+      : "Creative intelligence is not published in this export yet.",
+  });
 
   // ---- diagnostics ----------------------------------------------------
   const cards: DiagnosticsCard[] = [];
+  const int = (v: unknown) => {
+    const n = num(v);
+    return n === undefined ? undefined : Math.round(n);
+  };
+  const statValue = (v: unknown) => {
+    const n = int(v);
+    return n === undefined ? "NA" : n;
+  };
+
   if (ff) {
     const efAge = num(ffRaw["newest_asset_age_days"]);
+    const newest = ffRaw["newest_evidence_at"] as string | undefined;
+    const efCaption = [
+      newest ? `Newest asset ${formatShortDate(newest)}` : null,
+      efAge !== undefined ? `${Math.round(efAge)} days old` : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
     const efMetrics = [
-      metric("ef", "EF", ff.evidence_freshness, {
-        caption: efAge !== undefined ? `Newest asset ${round(efAge)} days old` : undefined,
-      }),
+      metric("ef", "EF", ff.evidence_freshness, { caption: efCaption || undefined }),
     ].filter(Boolean) as Metric[];
     if (efMetrics.length) {
       cards.push({
@@ -280,32 +328,36 @@ export function adaptUpstream(raw: UpstreamProfile, fallbackPlatform: Platform):
       });
     }
 
-    const cfMetrics = [
-      metric("cf", "CF", ff.content_freshness),
-      metric("originality", "ORIGINALITY", ffRaw["originality"]),
-      metric("topic_diversity", "TOPIC DIVERSITY", ffRaw["topic_diversity"]),
-    ].filter(Boolean) as Metric[];
+    const cfMetrics = [metric("cf", "CF", ff.content_freshness)].filter(Boolean) as Metric[];
     if (cfMetrics.length) {
       cards.push({
         id: "content_freshness",
         title: "Content freshness",
         badge: (ffRaw["content_freshness_band"] as string) || undefined,
         metrics: cfMetrics,
+        stats: [
+          { id: "originality", label: "Originality", value: statValue(ffRaw["originality"]) },
+          { id: "format_diversity", label: "Format div.", value: statValue(ffRaw["format_diversity"]) },
+          { id: "topic_diversity", label: "Topic div.", value: statValue(ffRaw["topic_diversity"]) },
+        ],
       });
     }
 
-    const frMetrics = [
-      metric("fr", "FR", ff.fatigue_risk),
-      metric("cadence", "CADENCE", ffRaw["cadence_pressure"]),
-      metric("commercial", "COMMERCIAL", ffRaw["commercial_density"]),
-      metric("repetition", "REPETITION", ffRaw["repetition_load"]),
-    ].filter(Boolean) as Metric[];
+    const frMetrics = [metric("fr", "FR", ff.fatigue_risk)].filter(Boolean) as Metric[];
     if (frMetrics.length) {
+      const coverage = int(ffRaw["fr_diagnostic_coverage"]);
       cards.push({
         id: "fatigue_risk",
         title: "Fatigue risk",
         badge: (ffRaw["fatigue_risk_band"] as string) || "INSUFFICIENT DATA",
         metrics: frMetrics,
+        stats: [
+          { id: "cadence", label: "Cadence", value: statValue(ffRaw["cadence_pressure"]) },
+          { id: "commercial", label: "Commercial", value: statValue(ffRaw["commercial_density"]) },
+          { id: "repetition", label: "Repetition", value: statValue(ffRaw["repetition_load"]) },
+          { id: "response_decay", label: "Response decay", value: statValue(ffRaw["response_decay"]) },
+        ],
+        footnote: coverage !== undefined ? `Coverage ${coverage}%` : undefined,
       });
     }
   }
@@ -354,16 +406,24 @@ export function adaptUpstream(raw: UpstreamProfile, fallbackPlatform: Platform):
       },
     },
     bcts: {
-      score: round(num(tp.bcts_governed) ?? num(tp.bcts_raw) ?? 0),
+      score: Math.round(num(tp.bcts_governed) ?? num(tp.bcts_raw) ?? 0),
       verdict: prettyVerdict(tp.outcome ?? tp.band ?? "not assessed"),
       tone: bandTone(tp.band),
     },
     trust_profile_available: raw.meta?.trust_profile_available ?? Boolean(raw.trust_profile),
     sections: visibleSections,
     diagnostics: cards.length
-      ? { title: "Freshness & fatigue", note: "Diagnostic only — not part of the trust score", cards }
+      ? {
+          title: "Freshness & fatigue",
+          note: "Diagnostic only — not part of the trust score",
+          footnote:
+            "Scores and recommendations are based on ToBe Basic Phase 1 methodology (launch hypothesis) and are subject to calibration and future enhancement.",
+          cards,
+        }
       : undefined,
     assets: (raw.assets ?? []) as TrustProfile["assets"],
+    platform_performance: buildPlatformPerformance(raw, platform),
+    compliance_overview: buildComplianceOverview(raw),
     meta: { generated_at: raw.generated_at, source: "creator-trust-service" },
   };
 }
@@ -375,4 +435,235 @@ function prettyVerdict(value: string) {
 
 function hasFlagEmoji(value: string) {
   return /[\u{1F1E6}-\u{1F1FF}]/u.test(value);
+}
+
+
+function formatShortDate(value: string) {
+  const d = new Date(value);
+  return Number.isNaN(d.getTime())
+    ? value
+    : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function compactNumber(value: unknown): string | undefined {
+  const n = num(value);
+  if (n === undefined) return undefined;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
+  return String(Math.round(n));
+}
+
+const PLATFORM_ORDER = ["instagram", "youtube", "facebook"];
+
+function buildPlatformPerformance(raw: UpstreamProfile, primary: Platform) {
+  const rows = raw.platform_performance ?? [];
+  const overview = raw.content_overview ?? {};
+  return PLATFORM_ORDER.map((platform) => {
+    const row = rows.find((r) => r.platform === platform);
+    if (!row) return { platform, connected: false };
+    const erSource =
+      platform === primary && num(overview["engagement_rate_followers"]) !== undefined
+        ? num(overview["engagement_rate_followers"])
+        : num(row.engagementRate);
+    return {
+      platform,
+      handle: row.handle,
+      connected: true,
+      followers: compactNumber(row.followers),
+      engagement_rate: erSource === undefined ? undefined : `${erSource.toFixed(2)}%`,
+      avg_views: compactNumber(row.avgViews ?? overview["avg_views"]),
+    };
+  });
+}
+
+function buildComplianceOverview(raw: UpstreamProfile): TrustProfile["compliance_overview"] {
+  const cr = raw.compliance_risk;
+  if (!cr) return undefined;
+  const events = raw.recent_trust_events ?? [];
+  const verified = num(cr["verified"]) ?? 0;
+  const assessed = num(raw.trust_profile?.assets_assessed) ?? verified;
+  const flags = (num(cr["non_compliant"]) ?? 0) + (num(cr["partially_compliant"]) ?? 0);
+  const risky = events.filter((e) => ["S3", "S4"].includes((e.severity ?? "").toUpperCase())).length;
+  return [
+    { id: "verified", label: "Posts Verified", value: `${verified} / ${assessed}`, icon: "check" },
+    {
+      id: "compliance_score",
+      label: "Compliance Score",
+      value: `${Math.round(num(cr["compliance_score"]) ?? 0)}/100`,
+      icon: "check",
+    },
+    { id: "flags", label: "Total Compliance Flags", value: String(flags), icon: "flag" },
+    {
+      id: "sponsored_disclosure",
+      label: "Sponsored Posts with Disclosure",
+      value: String(num(cr["sponsored_compliant"]) ?? 0),
+      icon: "tag",
+    },
+    { id: "risk_content", label: "Potential Risk Content", value: String(risky), icon: "alert" },
+    { id: "violations", label: "Policy Violations", value: String(events.length), icon: "alert" },
+  ];
+}
+
+// ---- I / V / W helpers -------------------------------------------------
+
+/** Titles like "Integrity Intelligence (I) 72/100", falling back to the bare label. */
+function scoreTitle(label: string, score: unknown) {
+  const n = num(score);
+  return n === undefined ? label : `${label} ${Math.round(n)}/100`;
+}
+
+/** NA-tolerant metric: keeps the row visible with a null value when data is absent. */
+function naMetric(id: string, label: string, value: number | null, extra: Partial<Metric> = {}): Metric {
+  return { id, label, value: value === null ? null : Math.round(value), ...extra };
+}
+
+function averageOf(metrics: Metric[]): number | null {
+  const vals = metrics.map((m) => m.value).filter((v): v is number => v !== null);
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+}
+
+const SEVERITY_CEILING: Record<string, number> = { S1: 95, S2: 90, S3: 70, S4: 40 };
+
+function buildIntegrityRows(raw: UpstreamProfile): Metric[] {
+  const mix = (raw.trust_action_mix ?? {}) as Record<string, unknown>;
+  const green = num(mix["GREEN"]) ?? num(mix["green"]) ?? 0;
+  const grey = num(mix["GREY"]) ?? num(mix["grey"]) ?? 0;
+  const black = num(mix["BLACK"]) ?? num(mix["black"]) ?? 0;
+  const total = green + grey + black;
+
+  const events = raw.recent_trust_events ?? [];
+  const severities = events.map((e) => (e.severity ?? "").toUpperCase()).filter((s) => s in SEVERITY_CEILING);
+  const worst = severities.sort((a, b) => Number(b.slice(1)) - Number(a.slice(1)))[0];
+  const severityControl = events.length === 0 ? 100 : worst ? SEVERITY_CEILING[worst]! : null;
+
+  const recurrent = events.filter((e) => e.recurrent === true).length;
+  const repeatRisk = events.length ? 100 - (100 * recurrent) / events.length : 100;
+
+  const asOf = raw.assessment_date ?? raw.trust_profile?.computed_at ?? raw.generated_at ?? null;
+  const asOfMs = asOf ? new Date(asOf).getTime() : Number.NaN;
+  const recent = events.filter((e) => {
+    const t = e.occurred_at ? new Date(e.occurred_at).getTime() : Number.NaN;
+    if (Number.isNaN(t) || Number.isNaN(asOfMs)) return false;
+    return (asOfMs - t) / 86400000 <= 30;
+  }).length;
+  const recentStability = Number.isNaN(asOfMs) ? null : Math.max(0, 100 - recent * 5);
+
+  return [
+    naMetric("green_consistency", "Green Consistency", total ? (100 * green) / total : null, {
+      caption: total ? `${green} of ${total} assets green` : undefined,
+    }),
+    naMetric("severity_control", "Severity Control", severityControl, {
+      caption: worst ? `Worst severity ${worst}` : "No severity events",
+    }),
+    naMetric("repeat_risk_control", "Repeat-Risk Control", repeatRisk, {
+      caption: events.length ? `${recurrent} of ${events.length} events recurrent` : undefined,
+    }),
+    naMetric("recent_stability", "Recent Stability", recentStability, {
+      caption: recentStability === null ? undefined : `${recent} events in last 30 days`,
+    }),
+  ];
+}
+
+const SAMPLE_TARGET = 30;
+const COVERAGE_TARGET_DAYS = 180;
+
+function buildEvidenceRows(raw: UpstreamProfile, ffRaw: Record<string, unknown>): Metric[] {
+  const corpus = (ffRaw["corpus"] ?? {}) as Record<string, unknown>;
+  const assessed = num(raw.trust_profile?.assets_assessed) ?? num(corpus["asset_count"]);
+  const span = num(corpus["span_days"]);
+  const freshness = num(raw.freshness_fatigue?.evidence_freshness);
+  const age = num(ffRaw["newest_asset_age_days"]);
+
+  return [
+    naMetric(
+      "sample_adequacy",
+      "Sample Adequacy",
+      assessed === undefined ? null : Math.min(100, (100 * assessed) / SAMPLE_TARGET),
+      { caption: assessed === undefined ? undefined : `${assessed} / ${SAMPLE_TARGET} assets` },
+    ),
+    naMetric(
+      "temporal_coverage",
+      "Temporal Coverage",
+      span === undefined ? null : Math.min(100, (100 * span) / COVERAGE_TARGET_DAYS),
+      { caption: span === undefined ? undefined : `${Math.round(span)} days (max ${COVERAGE_TARGET_DAYS})` },
+    ),
+    naMetric("evidence_freshness_v", "Evidence Freshness", freshness ?? null, {
+      caption: age === undefined ? undefined : `Latest asset ${Math.round(age)} days ago`,
+    }),
+  ];
+}
+
+function buildWowRows(raw: UpstreamProfile): Metric[] {
+  const w = ((raw as any)?.scores?.wow_components ?? {}) as Record<string, unknown>;
+  const band = (v: number | null) =>
+    v === null ? undefined : v >= 70 ? "Strong" : v >= 50 ? "Moderate" : "Weak";
+  const row = (id: string, label: string, key: string) => {
+    const v = num(w[key]) ?? null;
+    return naMetric(id, label, v, { caption: band(v) });
+  };
+  return [
+    row("asset_wow", "Asset WoW (Median)", "asset_wow"),
+    row("creative_resonance", "Creative Resonance", "creative_resonance"),
+    row("delivery_architecture", "Delivery Architecture", "delivery_architecture"),
+  ];
+}
+
+// ---- schema_version 3: published I / V / W rows -------------------------
+
+/** Maps a published band label ("Strong" | "Moderate" | "Weak") onto a tone. */
+function labelTone(label: unknown): Tone | undefined {
+  return bandTone(typeof label === "string" ? label : null);
+}
+
+function publishedIntegrityRows(block: Record<string, unknown>): Metric[] {
+  const val = (key: string) => num(block[key]) ?? null;
+  return [
+    naMetric("green_consistency", "Green Consistency", val("green_consistency")),
+    naMetric("severity_control", "Severity Control", val("severity_control")),
+    naMetric("repeat_risk_control", "Repeat-Risk Control", val("repeat_risk_control")),
+    naMetric("recent_stability", "Recent Stability", val("recent_stability")),
+  ];
+}
+
+function publishedEvidenceRows(block: Record<string, unknown>): Metric[] {
+  const assessed = num(block["assets_assessed"]);
+  const ideal = num(block["ideal_corpus_size"]);
+  const span = num(block["span_days"]);
+  const lookback = num(block["lookback_days"]);
+  const age = num(block["newest_asset_age_days"]);
+
+  return [
+    naMetric("sample_adequacy", "Sample Adequacy", num(block["sample_adequacy"]) ?? null, {
+      caption:
+        assessed !== undefined && ideal !== undefined
+          ? `${assessed} / ${ideal} assets`
+          : assessed !== undefined
+            ? `${assessed} assets`
+            : undefined,
+    }),
+    naMetric("temporal_coverage", "Temporal Coverage", num(block["temporal_coverage"]) ?? null, {
+      caption:
+        span !== undefined
+          ? `${Math.round(span)} days${lookback !== undefined ? ` (lookback ${Math.round(lookback)})` : ""}`
+          : undefined,
+    }),
+    naMetric("evidence_freshness_v", "Evidence Freshness", num(block["evidence_freshness"]) ?? null, {
+      caption: age === undefined ? undefined : `Latest asset ${Math.round(age)} days ago`,
+    }),
+  ];
+}
+
+function publishedWowRows(block: Record<string, unknown>): Metric[] {
+  const row = (id: string, label: string, key: string) => {
+    const value = num(block[key]) ?? null;
+    const bandLabel = block[`${key}_label`];
+    return naMetric(id, label, value, {
+      caption: typeof bandLabel === "string" ? bandLabel : undefined,
+      ...(labelTone(bandLabel) ? { tone: labelTone(bandLabel)! } : {}),
+    });
+  };
+  return [
+    row("wow_median", "Asset WoW (Median)", "wow_median"),
+    row("wow_resonance", "Creative Resonance", "wow_resonance"),
+    row("wow_delivery", "Delivery Architecture", "wow_delivery"),
+  ];
 }

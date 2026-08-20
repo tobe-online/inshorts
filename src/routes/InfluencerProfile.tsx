@@ -7,8 +7,8 @@ import DonutGauge from "@/components/DonutGauge";
 import SectionCard from "@/components/SectionCard";
 import IdentityCard from "@/components/IdentityCard";
 import DiagnosticsSection from "@/components/DiagnosticsSection";
-import AssetsTable from "@/components/AssetsTable";
-import FactsCard from "@/components/FactsCard";
+import PlatformPerformanceCard from "@/components/PlatformPerformanceCard";
+import ComplianceOverviewCard from "@/components/ComplianceOverviewCard";
 import ProfileSkeleton from "@/components/ProfileSkeleton";
 import EmptyState from "@/components/EmptyState";
 
@@ -142,22 +142,20 @@ export default function InfluencerProfile() {
             </>
             )}
 
-            {(data.content_overview || data.compliance_summary || data.content_diagnostics) && (
-              <div className="grid gap-5 lg:grid-cols-3">
-                {data.content_overview ? (
-                  <FactsCard title="Content & Reach" facts={data.content_overview} />
+            {data.diagnostics ? <DiagnosticsSection diagnostics={data.diagnostics} /> : null}
+
+            {(data.platform_performance?.length || data.compliance_overview?.length) && (
+              <div className="grid gap-5 lg:grid-cols-2">
+                {data.platform_performance?.length ? (
+                  <PlatformPerformanceCard rows={data.platform_performance} />
                 ) : null}
-                {data.compliance_summary ? (
-                  <FactsCard title="Compliance Summary" facts={data.compliance_summary} />
-                ) : null}
-                {data.content_diagnostics ? (
-                  <FactsCard title="Content Diagnostics" facts={data.content_diagnostics} />
+                {data.compliance_overview?.length ? (
+                  <ComplianceOverviewCard rows={data.compliance_overview} />
                 ) : null}
               </div>
             )}
 
-            {data.diagnostics ? <DiagnosticsSection diagnostics={data.diagnostics} /> : null}
-            {data.assets?.length ? <AssetsTable assets={data.assets} /> : null}
+
 
             {data.meta?.generated_at ? (
               <p className="pt-2 text-xs text-muted">

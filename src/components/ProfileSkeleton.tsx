@@ -1,4 +1,4 @@
-const Block = ({ className = "" }: { className?: string }) => (
+const Block = ({ className = "" }: { className?: string | undefined }) => (
   <div className={`animate-pulse rounded-lg bg-[#ededea] ${className}`} />
 );
 

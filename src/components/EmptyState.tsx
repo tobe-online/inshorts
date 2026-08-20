@@ -1,7 +1,7 @@
 interface Props {
   title: string;
   body: string;
-  onRetry?: () => void;
+  onRetry?: () => void | undefined;
 }
 
 export default function EmptyState({ title, body, onRetry }: Props) {

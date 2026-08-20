@@ -2,7 +2,7 @@ import type { Platform, TrustProfile } from "./types";
 import { adaptUpstream, isUpstreamPayload, normaliseUnified } from "./upstream";
 
 /** Empty = use the same-origin /api/profile proxy (dev middleware or Vercel edge function). */
-const BASE = (import.meta.env.VITE_EXPORT_BASE_URL ?? "").trim().replace(/\/$/, "");
+const BASE = (import.meta.env['VITE_EXPORT_BASE_URL'] ?? "").trim().replace(/\/$/, "");
 
 export class ProfileNotFoundError extends Error {}
 
@@ -18,7 +18,7 @@ function endpoint(handle: string, platform: Platform) {
 }
 
 async function load(url: string, signal?: AbortSignal): Promise<unknown> {
-  const res = await fetch(url, { signal });
+  const res = await fetch(url, signal ? { signal } : {});
   if (res.status === 404 || res.status === 403) throw new ProfileNotFoundError("Profile not found");
   if (!res.ok) throw new Error(`Request failed (${res.status})`);
   return res.json();

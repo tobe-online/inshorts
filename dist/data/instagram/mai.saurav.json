@@ -1,0 +1,271 @@
+{
+  "schema_version": 2,
+  "key": "mai.saurav-instagram-detail",
+  "generated_at": "2026-08-20T15:57:48.325Z",
+  "profile_url": "/influencers/mai.saurav?platform=instagram",
+  "handle": "mai.saurav",
+  "platform": "instagram",
+  "identity": {
+    "handle": "mai.saurav",
+    "platform": "instagram",
+    "full_name": "Saurav | COMEDIAN",
+    "biography": "Contractor of laughter 😂🎬\n📍Patna\nFor business 📧",
+    "profile_image_url": "",
+    "is_verified": false,
+    "categories": [],
+    "business_category": null,
+    "linked_accounts": [
+      {
+        "platform": "instagram",
+        "handle": "mai.saurav",
+        "followers": 10010,
+        "media": 521
+      },
+      {
+        "platform": "youtube",
+        "handle": "mai.saurav",
+        "followers": 35700,
+        "media": 841
+      }
+    ],
+    "display_name": "Saurav | COMEDIAN",
+    "avatar_url": null,
+    "country_flag": "IN",
+    "links": [
+      {
+        "type": "instagram",
+        "label": "@mai.saurav",
+        "url": "https://www.instagram.com/mai.saurav/"
+      },
+      {
+        "type": "youtube",
+        "label": "@mai.saurav",
+        "url": "https://www.youtube.com/@mai.saurav"
+      }
+    ]
+  },
+  "assessment": {
+    "date": "2026-08-20",
+    "computed_at": "2026-08-20T07:05:27.067+00:00",
+    "window": {
+      "from": null,
+      "to": null,
+      "days": 365
+    },
+    "assets_assessed": 12,
+    "assets_assessed_by_platform": [
+      {
+        "platform": "instagram",
+        "count": 12
+      },
+      {
+        "platform": "youtube",
+        "count": 7
+      }
+    ],
+    "black_assets": 0,
+    "languages": [
+      {
+        "label": "Hindi",
+        "count": 12
+      }
+    ],
+    "language_mix": {
+      "Hindi": 12
+    },
+    "action_mix": {
+      "grey": 4,
+      "green": 9,
+      "black": 0
+    },
+    "trust_action_mix": {
+      "GREY": 4,
+      "GREEN": 9
+    }
+  },
+  "bcts": {
+    "score": 70.65,
+    "score_display": 71,
+    "score_raw": 70.65,
+    "verdict": "SUITABLE",
+    "band": "strong",
+    "tone": "green",
+    "tooltip": "Composite trust score across governance quality, integrity intelligence and evidence confidence."
+  },
+  "scores": {
+    "governance_quality": 70.03,
+    "integrity_intelligence": 71.67,
+    "evidence_confidence": null,
+    "wow_creative": null,
+    "governance_components": {
+      "truth": 57.25,
+      "compliance": 80,
+      "disclosure": 83.33,
+      "responsible": 84.35
+    }
+  },
+  "freshness_fatigue": {
+    "evidence_freshness": 100,
+    "evidence_freshness_band": "CURRENT",
+    "content_freshness": 68.5,
+    "content_freshness_band": "MIXED",
+    "fatigue_risk": 0,
+    "fatigue_risk_band": null,
+    "originality": 98.53,
+    "format_diversity": 0,
+    "topic_diversity": 46.9,
+    "commercial_density": 10.53,
+    "repetition_load": 1.47,
+    "cadence_pressure": 0,
+    "response_decay": 0,
+    "newest_evidence_at": "2026-08-12T11:06:58+00:00",
+    "newest_asset_age_days": 7.83,
+    "cf_coverage": 100,
+    "cf_reason_codes": [],
+    "fr_diagnostic_coverage": 55,
+    "fr_reason_codes": [
+      "MISSING_CADENCE_BASELINE",
+      "MISSING_COMPARABLE_ENGAGEMENT",
+      "INSUFFICIENT_DIAGNOSTIC_COVERAGE",
+      "INSUFFICIENT_COMPONENTS"
+    ],
+    "corpus": {
+      "span_days": 311,
+      "asset_count": 10,
+      "corpus_size": 30,
+      "lookback_days": 365,
+      "assets_with_comparator": 9
+    },
+    "complete_history": true,
+    "method_version": "2026-08-19.ff.v1.2",
+    "raw": {
+      "id": "083be766-4390-4187-9534-1a83bb2626a7",
+      "creator_key": "773a8794-943e-4c4b-9b30-cdc0cb0cafe9",
+      "influencer_id": "773a8794-943e-4c4b-9b30-cdc0cb0cafe9",
+      "platform": "all",
+      "assessment_as_of": "2026-08-20T07:05:29.929+00:00",
+      "evidence_freshness": 100,
+      "evidence_freshness_band": "CURRENT",
+      "newest_evidence_at": "2026-08-12T11:06:58+00:00",
+      "newest_asset_age_days": 7.83,
+      "content_freshness": 68.5,
+      "content_freshness_band": "MIXED",
+      "originality": 98.53,
+      "format_diversity": 0,
+      "topic_diversity": 46.9,
+      "cf_reason_codes": [],
+      "cf_coverage": 100,
+      "fatigue_risk": null,
+      "fatigue_risk_band": null,
+      "cadence_pressure": null,
+      "commercial_density": 10.53,
+      "repetition_load": 1.47,
+      "response_decay": null,
+      "fr_diagnostic_coverage": 55,
+      "fr_reason_codes": [
+        "MISSING_CADENCE_BASELINE",
+        "MISSING_COMPARABLE_ENGAGEMENT",
+        "INSUFFICIENT_DIAGNOSTIC_COVERAGE",
+        "INSUFFICIENT_COMPONENTS"
+      ],
+      "corpus": {
+        "span_days": 311,
+        "asset_count": 10,
+        "corpus_size": 30,
+        "lookback_days": 365,
+        "assets_with_comparator": 9
+      },
+      "complete_history": true,
+      "ef_method_version": "2026-08-19.ef.v1.2",
+      "cf_method_version": "2026-08-19.cf.v1.2",
+      "fr_method_version": "2026-08-19.fr.v1.2",
+      "method_version": "2026-08-19.ff.v1.2",
+      "created_at": "2026-08-19T21:08:49.383284+00:00",
+      "updated_at": "2026-08-20T07:05:30.904791+00:00"
+    }
+  },
+  "content_overview": {
+    "posts_tracked": 12,
+    "media_count": 521,
+    "posts_per_week": 0.11588018171869745,
+    "avg_views": null,
+    "median_views": null,
+    "avg_likes": 17642.333333333332,
+    "avg_comments": 90.16666666666667,
+    "followers": 10010,
+    "engagement_rate_followers": 0,
+    "engagement_rate_views": 0,
+    "sample_size": 12
+  },
+  "platform_performance": [
+    {
+      "platform": "instagram",
+      "handle": "mai.saurav",
+      "followers": 10010,
+      "posts": 12,
+      "engagementRate": 1.5134865134865136,
+      "avgViews": null
+    },
+    {
+      "platform": "youtube",
+      "handle": "mai.saurav",
+      "followers": 35700,
+      "posts": null,
+      "engagementRate": 0.05,
+      "avgViews": null
+    }
+  ],
+  "compliance_risk": {
+    "verified": 12,
+    "compliant": 0,
+    "non_compliant": 3,
+    "partially_compliant": 1,
+    "sponsored": 0,
+    "sponsored_compliant": 0,
+    "compliance_score": 13
+  },
+  "recent_trust_events": [
+    {
+      "occurred_at": "2026-08-19T20:56:44.659008+00:00",
+      "severity": "S1",
+      "rule_code": "V1_DISCLOSURE",
+      "recurrent": true,
+      "summary": null
+    },
+    {
+      "occurred_at": "2026-08-19T20:53:47.488442+00:00",
+      "severity": "S1",
+      "rule_code": "V1_DISCLOSURE",
+      "recurrent": false,
+      "summary": null
+    },
+    {
+      "occurred_at": "2026-08-19T20:53:43.928681+00:00",
+      "severity": "S2",
+      "rule_code": "V5_VULNERABLE",
+      "recurrent": true,
+      "summary": null
+    },
+    {
+      "occurred_at": "2026-08-19T20:52:49.556408+00:00",
+      "severity": "S2",
+      "rule_code": "V5_VULNERABLE",
+      "recurrent": false,
+      "summary": null
+    }
+  ],
+  "assets": [],
+  "meta": {
+    "source": "creator-trust-service",
+    "endpoint": "/creator-trust-profile?handle=mai.saurav&platform=instagram",
+    "trust_profile_available": true,
+    "unavailable_fields": [
+      "assessment.window.from",
+      "assessment.window.to",
+      "assets",
+      "identity.profile_image_url",
+      "scores.evidence_confidence",
+      "scores.wow_creative"
+    ]
+  }
+}

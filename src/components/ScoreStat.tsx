@@ -6,7 +6,8 @@ import InfoTip from "./InfoTip";
 /** Big numeral + bar, used for the "columns" section layout. */
 export default function ScoreStat({ metric }: { metric: Metric }) {
   const max = metric.max ?? 100;
-  const color = toneHex(metric.tone, metric.value);
+  const na = metric.value === null;
+  const color = toneHex(metric.tone, metric.value ?? undefined);
 
   return (
     <div>
@@ -15,11 +16,16 @@ export default function ScoreStat({ metric }: { metric: Metric }) {
         <InfoTip text={metric.tooltip} />
       </div>
       <div className="mt-1 flex items-baseline gap-1">
-        <span className="tnum text-3xl font-semibold leading-none text-ink">{metric.value}</span>
-        <span className="text-xs text-muted">/{max}</span>
+        <span className="tnum text-3xl font-semibold leading-none text-ink">
+          {na ? "NA" : metric.value}
+        </span>
+        {na ? null : <span className="text-xs text-muted">/{max}</span>}
       </div>
       <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-[#eeeeea]">
-        <div className="h-full rounded-full" style={{ width: `${pct(metric.value, max)}%`, backgroundColor: color }} />
+        <div
+          className="h-full rounded-full"
+          style={{ width: `${na ? 0 : pct(metric.value ?? 0, max)}%`, backgroundColor: color }}
+        />
       </div>
       {metric.caption ? <p className="mt-1.5 text-xs text-muted">{metric.caption}</p> : null}
     </div>

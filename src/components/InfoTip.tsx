@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 
 /** Circled-i hint. Text comes from the payload; renders nothing when absent. */
-export default function InfoTip({ text }: { text?: string }) {
+export default function InfoTip({ text }: { text?: string | undefined }) {
   const [open, setOpen] = useState(false);
   const id = useId();
   if (!text) return null;

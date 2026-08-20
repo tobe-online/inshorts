@@ -1,7 +1,7 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "key": "mai.saurav-instagram-detail",
-  "generated_at": "2026-08-20T15:57:48.325Z",
+  "generated_at": "2026-08-20T19:52:58.026Z",
   "profile_url": "/influencers/mai.saurav?platform=instagram",
   "handle": "mai.saurav",
   "platform": "instagram",
@@ -12,7 +12,9 @@
     "biography": "Contractor of laughter 😂🎬\n📍Patna\nFor business 📧",
     "profile_image_url": "",
     "is_verified": false,
-    "categories": [],
+    "categories": [
+      "bf16fe4e-3238-4412-884e-be06af43741a"
+    ],
     "business_category": null,
     "linked_accounts": [
       {
@@ -84,42 +86,72 @@
     }
   },
   "bcts": {
-    "score": 70.65,
-    "score_display": 71,
-    "score_raw": 70.65,
+    "score": 71,
+    "score_raw": 71,
     "verdict": "SUITABLE",
     "band": "strong",
     "tone": "green",
     "tooltip": "Composite trust score across governance quality, integrity intelligence and evidence confidence."
   },
   "scores": {
-    "governance_quality": 70.03,
-    "integrity_intelligence": 71.67,
-    "evidence_confidence": null,
-    "wow_creative": null,
+    "governance_quality": 70,
+    "integrity_intelligence": 72,
+    "evidence_confidence": 68,
+    "wow_creative": 38,
     "governance_components": {
-      "truth": 57.25,
+      "truth": 57,
       "compliance": 80,
-      "disclosure": 83.33,
-      "responsible": 84.35
+      "disclosure": 83,
+      "responsible": 84
     }
+  },
+  "integrity": {
+    "i_score": 72,
+    "green_consistency": 67,
+    "severity_control": 90,
+    "repeat_risk_control": 50,
+    "recent_stability": 80
+  },
+  "evidence": {
+    "v": 68,
+    "sample_adequacy": 40,
+    "assets_assessed": 12,
+    "ideal_corpus_size": 12,
+    "temporal_coverage": 100,
+    "span_days": 311,
+    "lookback_days": 180,
+    "evidence_freshness": 91,
+    "newest_asset_age_days": 8,
+    "action_mix": {
+      "GREY": 4,
+      "BLACK": 0,
+      "GREEN": 8
+    }
+  },
+  "wow": {
+    "wow_median": 38,
+    "wow_median_label": "Weak",
+    "wow_resonance": 45,
+    "wow_resonance_label": "Weak",
+    "wow_delivery": 46,
+    "wow_delivery_label": "Weak"
   },
   "freshness_fatigue": {
     "evidence_freshness": 100,
     "evidence_freshness_band": "CURRENT",
-    "content_freshness": 68.5,
+    "content_freshness": 69,
     "content_freshness_band": "MIXED",
     "fatigue_risk": 0,
     "fatigue_risk_band": null,
-    "originality": 98.53,
+    "originality": 99,
     "format_diversity": 0,
-    "topic_diversity": 46.9,
-    "commercial_density": 10.53,
-    "repetition_load": 1.47,
+    "topic_diversity": 47,
+    "commercial_density": 11,
+    "repetition_load": 1,
     "cadence_pressure": 0,
     "response_decay": 0,
     "newest_evidence_at": "2026-08-12T11:06:58+00:00",
-    "newest_asset_age_days": 7.83,
+    "newest_asset_age_days": 8,
     "cf_coverage": 100,
     "cf_reason_codes": [],
     "fr_diagnostic_coverage": 55,
@@ -187,11 +219,11 @@
   "content_overview": {
     "posts_tracked": 12,
     "media_count": 521,
-    "posts_per_week": 0.11588018171869745,
-    "avg_views": null,
-    "median_views": null,
-    "avg_likes": 17642.333333333332,
-    "avg_comments": 90.16666666666667,
+    "posts_per_week": 0.1,
+    "avg_views": 0,
+    "median_views": 0,
+    "avg_likes": 17642,
+    "avg_comments": 90,
     "followers": 10010,
     "engagement_rate_followers": 0,
     "engagement_rate_views": 0,
@@ -203,8 +235,10 @@
       "handle": "mai.saurav",
       "followers": 10010,
       "posts": 12,
-      "engagementRate": 1.5134865134865136,
-      "avgViews": null
+      "engagementRate": 1.51,
+      "engagement_rate": 1.51,
+      "avgViews": 0,
+      "avg_views": 0
     },
     {
       "platform": "youtube",
@@ -212,7 +246,9 @@
       "followers": 35700,
       "posts": null,
       "engagementRate": 0.05,
-      "avgViews": null
+      "engagement_rate": 0.05,
+      "avgViews": 0,
+      "avg_views": 0
     }
   ],
   "compliance_risk": {
@@ -254,7 +290,320 @@
       "summary": null
     }
   ],
-  "assets": [],
+  "assets": [
+    {
+      "id": "bdf2daac-8ad5-44a0-8d31-36273c09d05a",
+      "adhoc_post_id": "fedc4771-7e13-4ff2-bdab-725cc46baa04",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/DbS_n36vfwz",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:56:44.602074+00:00",
+      "trust_action": "GREY",
+      "aqs": 53,
+      "aqs_raw": 53.37,
+      "decision_risk": 0.182,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 40,
+        "d": 0,
+        "r": 95.81,
+        "t": 67.5,
+        "aqs_raw": 53.37,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "69bb77d0-a8b8-4160-a3cb-092d2140ae65",
+      "adhoc_post_id": "348fcb3d-b4b8-427b-a253-e696a56f3d4a",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/Da28zWVvZYk",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:55:02.760226+00:00",
+      "trust_action": "GREY",
+      "aqs": 69,
+      "aqs_raw": 86.46,
+      "decision_risk": 0.148,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 91.4,
+        "t": 69.38,
+        "aqs_raw": 86.46,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "72b31f69-7aff-483b-a560-dc618e0c0987",
+      "adhoc_post_id": "20d86283-44a4-405f-a095-842313c7a828",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/DPvDRygD8gD",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:54:07.235206+00:00",
+      "trust_action": "GREEN",
+      "aqs": 87,
+      "aqs_raw": 87.31,
+      "decision_risk": 0.139,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 92.09,
+        "t": 71.25,
+        "aqs_raw": 87.31,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "ddab3f1f-e13d-4230-8dfb-a678d830d64b",
+      "adhoc_post_id": "01f60949-6703-47d0-9799-bdfbdaefa8f3",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/Da7YnTDPvql",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:53:47.278372+00:00",
+      "trust_action": "GREY",
+      "aqs": 29,
+      "aqs_raw": 29.17,
+      "decision_risk": 0.554,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 40,
+        "d": 0,
+        "r": 51.16,
+        "t": 23.75,
+        "aqs_raw": 29.17,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "8234a482-fabd-4914-a817-43ec353e136c",
+      "adhoc_post_id": "07f822dd-1598-473d-8b3a-82406f6e0d5c",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/C-xfTceS898",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:53:43.487881+00:00",
+      "trust_action": "GREEN",
+      "aqs": 58,
+      "aqs_raw": 57.81,
+      "decision_risk": 0.233,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 40,
+        "d": 100,
+        "r": 92.09,
+        "t": 42.5,
+        "aqs_raw": 57.81,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "ac7cd0a9-550e-48ed-8186-a838ff8dc10a",
+      "adhoc_post_id": "12a409f7-27d4-4c04-b4cd-1be70fa549a8",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/C_NtKPWywPJ",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:53:05.883367+00:00",
+      "trust_action": "GREEN",
+      "aqs": 83,
+      "aqs_raw": 82.71,
+      "decision_risk": 0.236,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 81.4,
+        "t": 63.75,
+        "aqs_raw": 82.71,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "824e330c-c969-45fd-ba87-2cb144e4e09f",
+      "adhoc_post_id": "0590eb4f-3985-4e41-aaf4-5d22e08c920c",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/DaxcoWQvpYw",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:52:55.27661+00:00",
+      "trust_action": "GREEN",
+      "aqs": 82,
+      "aqs_raw": 82.31,
+      "decision_risk": 0.171,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 92.09,
+        "t": 58.75,
+        "aqs_raw": 82.31,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "758e4394-09ea-4192-bb30-80138580df34",
+      "adhoc_post_id": "bfa0054f-ab81-4969-a596-8489b20e1884",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/DaiBIx_PnLp",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:52:49.33188+00:00",
+      "trust_action": "GREY",
+      "aqs": 44,
+      "aqs_raw": 43.76,
+      "decision_risk": 0.526,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 40,
+        "d": 100,
+        "r": 48.37,
+        "t": 23.75,
+        "aqs_raw": 43.76,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "997b1ff4-8f57-4635-a9ae-033409ec636b",
+      "adhoc_post_id": "52402296-ebb3-40e6-bad1-5c44f612b4da",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/Da3Mj41vQhZ",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:52:32.445938+00:00",
+      "trust_action": "GREEN",
+      "aqs": 87,
+      "aqs_raw": 87.31,
+      "decision_risk": 0.139,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 92.09,
+        "t": 71.25,
+        "aqs_raw": 87.31,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "f97dd609-8bce-468a-9430-ff7e00004c13",
+      "adhoc_post_id": "b62ee94a-942a-4435-800c-b699f714821e",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/Da-gdVqPA_3",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:52:03.205947+00:00",
+      "trust_action": "GREEN",
+      "aqs": 87,
+      "aqs_raw": 87.11,
+      "decision_risk": 0.132,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 90.7,
+        "t": 71.25,
+        "aqs_raw": 87.11,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "d17ce1e1-2ddb-47da-9273-bd6770d60c28",
+      "adhoc_post_id": "1375be74-bcdc-4451-a24c-f78452dd60b3",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/Db8A567PLaP",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:51:52.934097+00:00",
+      "trust_action": "GREEN",
+      "aqs": 77,
+      "aqs_raw": 77.31,
+      "decision_risk": 0.211,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 92.09,
+        "t": 46.25,
+        "aqs_raw": 77.31,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "5e4028e3-1219-49c4-b007-5c8f0851a37d",
+      "adhoc_post_id": "f894d722-c457-4fc9-a4fb-ce86e8f79330",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/DbA7GFzPZz6",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:51:50.755884+00:00",
+      "trust_action": "GREEN",
+      "aqs": 90,
+      "aqs_raw": 89.96,
+      "decision_risk": 0.12,
+      "sector": "FINANCE",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 92.93,
+        "t": 77.56,
+        "aqs_raw": 89.96,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    },
+    {
+      "id": "27027836-daac-483f-8079-40767a8dea9c",
+      "adhoc_post_id": "1375be74-bcdc-4451-a24c-f78452dd60b3",
+      "post_id": null,
+      "post_url": "https://www.instagram.com/p/Db8A567PLaP",
+      "platform": "instagram",
+      "assessed_at": "2026-08-19T20:51:49.160456+00:00",
+      "trust_action": "GREEN",
+      "aqs": 81,
+      "aqs_raw": 80.58,
+      "decision_risk": 0.195,
+      "sector": "GENERAL",
+      "requires_human_review": false,
+      "review_reasons": [],
+      "tcdr": {
+        "c": 100,
+        "d": 100,
+        "r": 90.56,
+        "t": 55,
+        "aqs_raw": 80.58,
+        "proxy_status": "provisional",
+        "formula_version": "2026-08-19.tcdr.v1"
+      }
+    }
+  ],
   "meta": {
     "source": "creator-trust-service",
     "endpoint": "/creator-trust-profile?handle=mai.saurav&platform=instagram",
@@ -262,10 +611,7 @@
     "unavailable_fields": [
       "assessment.window.from",
       "assessment.window.to",
-      "assets",
-      "identity.profile_image_url",
-      "scores.evidence_confidence",
-      "scores.wow_creative"
+      "identity.profile_image_url"
     ]
   }
 }

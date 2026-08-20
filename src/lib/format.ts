@@ -10,7 +10,7 @@ export function pct(value: number, max = 100): number {
   return Math.max(0, Math.min(100, (value / max) * 100));
 }
 
-export function joinCounts(items: { label: string; count: number }[], limit = 4): string {
+export function joinCounts(items: { label: string; count: number }[], limit = 8): string {
   if (!items.length) return "—";
   const head = items.slice(0, limit).map((i) => `${i.label} ${i.count}`);
   return head.join(" · ") + (items.length > limit ? " · …" : "");

@@ -9,7 +9,7 @@
   --color-good: #16a34a;
   --color-watch: #f59e0b;
   --color-risk: #dc2626;
-  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
   --radius-xl: 12px;
 }
 

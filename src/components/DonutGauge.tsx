@@ -3,10 +3,10 @@ import type { Tone } from "@/lib/types";
 
 interface Props {
   value: number;
-  max?: number;
-  verdict?: string;
-  tone?: Tone;
-  size?: number;
+  max?: number | undefined;
+  verdict?: string | undefined;
+  tone?: Tone | undefined;
+  size?: number | undefined;
 }
 
 export default function DonutGauge({ value, max = 100, verdict, tone, size = 176 }: Props) {
