@@ -66,6 +66,9 @@ export default function Glossary() {
         What each metric in the Basic Creator Trust Profile means and how it is derived.
       </p>
 
+      {c && (c["LOOKBACK_DAYS"] || c["MIN_ASSETS"] || c["CORPUS_SIZE"]) ? (
+      
+      ) : null}
 
       <div className="mt-6">
         {status === "loading" && (
