@@ -1,3 +1,5 @@
+export const config = { runtime: "edge" };
+
 /**
  * Vercel Edge handler for the glossary / tooltips endpoint.
  *

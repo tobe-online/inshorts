@@ -40,8 +40,17 @@ export async function fetchProfile(
   } catch (err) {
     if (err instanceof ProfileNotFoundError) throw err;
     // Offline / dev safety net: bundled fixtures in public/data.
-    console.warn(`[trust-profile] export fetch failed (${url}); trying local fixture`);
-    json = await load(`/data/${platform}/${handle}.json`, signal);
+    console.warn(`[trust-profile] export fetch failed (${url}); trying direct service`);
+    const qs = `handle=${encodeURIComponent(handle)}&platform=${platform}`;
+    try {
+      json = await load(
+        `https://creator-trust-service-o7x7yagetq-el.a.run.app/creator-trust-profile?${qs}`,
+        signal,
+      );
+    } catch {
+      // Offline / dev safety net: bundled fixtures in public/data.
+      json = await load(`/data/${platform}/${handle}.json`, signal);
+    }
   }
 
   const normalised = normaliseUnified(json);
@@ -53,9 +62,23 @@ export async function fetchProfile(
 }
 
 /** Fetches the glossary/tooltips reference from the Creator Trust Service. */
+const SERVICE_FALLBACK = "https://creator-trust-service-o7x7yagetq-el.a.run.app";
+
 export async function fetchGlossary(signal?: AbortSignal): Promise<GlossaryPayload> {
-  const url = BASE ? `${BASE}/tooltips` : "/api/tooltips";
-  const json = (await load(url, signal)) as GlossaryPayload;
-  if (!json || !Array.isArray(json.sections)) throw new Error("Malformed glossary payload");
-  return json;
+  const urls = BASE
+    ? [`${BASE}/tooltips`]
+    : ["/api/tooltips", `${SERVICE_FALLBACK}/tooltips`];
+
+  let lastErr: unknown;
+  for (const url of urls) {
+    try {
+      const json = (await load(url, signal)) as GlossaryPayload;
+      if (!json || !Array.isArray(json.sections)) throw new Error("Malformed glossary payload");
+      return json;
+    } catch (err) {
+      lastErr = err;
+      console.warn(`[trust-profile] glossary fetch failed (${url})`);
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error("Glossary fetch failed");
 }
