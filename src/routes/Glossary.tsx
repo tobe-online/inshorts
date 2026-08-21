@@ -67,7 +67,9 @@ export default function Glossary() {
       </p>
 
       {c && (c["LOOKBACK_DAYS"] || c["MIN_ASSETS"] || c["CORPUS_SIZE"]) ? (
-      
+        <p className="mt-3 text-xs text-muted">
+          
+        </p>
       ) : null}
 
       <div className="mt-6">
