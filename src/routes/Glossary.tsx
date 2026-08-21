@@ -55,19 +55,19 @@ export default function Glossary() {
     <main className="mx-auto max-w-[1000px] px-4 py-6 sm:px-6 sm:py-8">
       <Link
         to={back}
-        className="inline-flex items-center gap-1.5 text-sm font-medium  transition-colors hover:text-ink"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-ink"
       >
         <ArrowLeft className="h-4 w-4" />
         {back === "/" ? "Back" : "Back to profile"}
       </Link>
 
       <h1 className="mt-4 text-xl font-semibold text-ink">Glossary</h1>
-      <p className="mt-1.5 text-sm ">
+      <p className="mt-1.5 text-sm text-muted">
         What each metric in the Basic Creator Trust Profile means and how it is derived.
       </p>
 
       {c && (c["LOOKBACK_DAYS"] || c["MIN_ASSETS"] || c["CORPUS_SIZE"]) ? (
-        <p className="mt-3 text-xs ">
+        <p className="mt-3 text-xs text-muted">
           Assessment window:{" "}
           {[
             c["LOOKBACK_DAYS"] ? `${c["LOOKBACK_DAYS"]}-day lookback` : null,
@@ -117,7 +117,7 @@ function SectionBlock({ section }: { section: GlossarySection }) {
       <CardTitle>{section.title}</CardTitle>
 
       {overview.map((i, idx) => (
-        <p key={idx} className="-mt-2 mb-4 text-sm leading-relaxed ">
+        <p key={idx} className="-mt-2 mb-4 text-sm leading-relaxed text-muted">
           {i.text}
         </p>
       ))}
@@ -126,13 +126,13 @@ function SectionBlock({ section }: { section: GlossarySection }) {
         {terms.map((item, idx) => (
           <div key={`${item.label}-${idx}`} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr] sm:gap-5">
             <dt className="text-sm font-semibold text-ink">{prettyLabel(item.label)}</dt>
-            <dd className="text-sm leading-relaxed ">{item.text}</dd>
+            <dd className="text-sm leading-relaxed text-muted">{item.text}</dd>
           </div>
         ))}
       </dl>
 
       {section.footnote ? (
-        <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed ">{section.footnote}</p>
+        <p className="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-muted">{section.footnote}</p>
       ) : null}
     </Card>
   );
