@@ -3,10 +3,11 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 
-const EXPORT_BASE =
-  process.env.EXPORT_BASE_URL ?? "https://storage.googleapis.com/tobe-filebuckets/creator-exports";
+const SERVICE_BASE = (
+  process.env.CREATOR_SERVICE_URL ?? "https://creator-trust-service-o7x7yagetq-el.a.run.app"
+).replace(/\/$/, "");
 
-/** Mirrors api/profile.ts during `vite dev` / `vite preview` so the bucket's missing CORS never bites. */
+/** Mirrors api/profile.ts during `vite dev` / `vite preview` so the service's CORS works. */
 function exportProxy(): Plugin {
   const middleware = async (req: any, res: any, next: any) => {
     if (!req.url?.startsWith("/api/profile")) return next();
@@ -23,7 +24,7 @@ function exportProxy(): Plugin {
     }
     try {
       const upstream = await fetch(
-        `${EXPORT_BASE}/${encodeURIComponent(`${handle}-${platform}-detail`)}.json`,
+        `${SERVICE_BASE}/creator-trust-profile?handle=${encodeURIComponent(handle)}&platform=${platform}`,
       );
       if (upstream.status === 404 || upstream.status === 403) {
         return send(404, JSON.stringify({ error: "Profile not found" }));

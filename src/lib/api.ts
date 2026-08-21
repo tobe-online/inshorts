@@ -2,19 +2,18 @@ import type { Platform, TrustProfile } from "./types";
 import { adaptUpstream, isUpstreamPayload, normaliseUnified } from "./upstream";
 
 /** Empty = use the same-origin /api/profile proxy (dev middleware or Vercel edge function). */
-const BASE = (import.meta.env['VITE_EXPORT_BASE_URL'] ?? "").trim().replace(/\/$/, "");
+const BASE = (import.meta.env['VITE_CREATOR_SERVICE_URL'] ?? "").trim().replace(/\/$/, "");
 
 export class ProfileNotFoundError extends Error {}
 
 /**
- * Exports are published as static JSON keyed by `<handle>-<platform>-detail.json`,
- * e.g. berojgarphotowala-instagram-detail.json. The bucket sends no CORS headers, so the
- * request goes through the same-origin /api/profile proxy unless an explicitly
- * CORS-enabled base URL is configured.
+ * Fetches the profile from the creator trust service.
+ * GET /creator-trust-profile?handle=...&platform=...
  */
 function endpoint(handle: string, platform: Platform) {
-  if (BASE) return `${BASE}/${encodeURIComponent(`${handle}-${platform}-detail`)}.json`;
-  return `/api/profile?handle=${encodeURIComponent(handle)}&platform=${platform}`;
+  const qs = `handle=${encodeURIComponent(handle)}&platform=${platform}`;
+  if (BASE) return `${BASE}/creator-trust-profile?${qs}`;
+  return `/api/profile?${qs}`;
 }
 
 async function load(url: string, signal?: AbortSignal): Promise<unknown> {

@@ -11,40 +11,40 @@ cp .env.example .env
 npm run dev      # http://localhost:5173/influencers/berojgarphotowala?platform=instagram
 ```
 
-With `VITE_API_BASE_URL` empty the app reads local fixtures from
+With `VITE_CREATOR_SERVICE_URL` empty the app reads local fixtures from
 `public/data/<platform>/<handle>.json`, so you can develop before the API exists.
 
 ## Deploy to Vercel
 
 1. Push this folder to a Git repo and import it in Vercel (framework preset: Vite).
-2. Set `VITE_API_BASE_URL` (and `VITE_API_KEY` if needed) in Project Settings → Environment Variables.
+2. Set `VITE_CREATOR_SERVICE_URL` (and `VITE_API_KEY` if needed) in Project Settings → Environment Variables.
 3. `vercel.json` already rewrites all paths to `index.html` so deep links work.
 
 ## API contract
 
-`GET {VITE_API_BASE_URL}/api/influencers?handle=<handle>&platform=<instagram|youtube>`
+`GET {VITE_CREATOR_SERVICE_URL}/creator-trust-profile?handle=<handle>&platform=<instagram|youtube>`
 
 - `200` → profile JSON (see `src/lib/types.ts` and the fixtures in `public/data/`)
 - `404` → renders the "Profile Not Available" state
 - CORS must allow the Vercel origin.
 
 If the key must stay server-side, deploy `api/profile.ts` and point
-`VITE_API_BASE_URL` at your own domain root (`/api/profile?handle=...&platform=...`).
+`VITE_CREATOR_SERVICE_URL` at your own domain root (`/api/profile?handle=...&platform=...`).
 
 ## Data source
 
-Profiles are read from the published creator exports:
+Profiles are read from the Creator Trust Service:
 
 ```
-https://storage.googleapis.com/tobe-filebuckets/creator-exports/<handle>-<platform>-detail.json
-e.g. berojgarphotowala-instagram-detail.json, amarjeet_comedy7-youtube-detail.json
+https://creator-trust-service-o7x7yagetq-el.a.run.app/creator-trust-profile?handle=<handle>&platform=<instagram|youtube>
+e.g. handle=berojgarphotowala&platform=instagram
 ```
 
-The bucket does not send CORS headers, so the browser calls the same-origin proxy
+The service supports CORS, so the browser can call it directly. A same-origin proxy
 `/api/profile?handle=<handle>&platform=<instagram|youtube>` (Vercel edge function in
-`api/profile.ts`, mirrored by a Vite middleware in dev/preview). Override the upstream
-with `EXPORT_BASE_URL` on the server, or bypass the proxy entirely with
-`VITE_EXPORT_BASE_URL` if you host a CORS-enabled copy.
+`api/profile.ts`, mirrored by a Vite middleware in dev/preview) is still available.
+Override the upstream with `CREATOR_SERVICE_URL` on the server, or bypass the proxy entirely with
+`VITE_CREATOR_SERVICE_URL` if you host a CORS-enabled copy.
 
 ## Routes
 

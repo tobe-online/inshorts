@@ -1,15 +1,12 @@
 /**
- * Vercel Edge proxy for the published creator exports.
- * The GCS bucket does not send CORS headers, so the browser cannot read it directly;
- * this function fetches server-side and returns the JSON with permissive CORS.
- *
+ * Vercel Edge proxy for the creator trust service.
  * GET /api/profile?handle=berojgarphotowala&platform=instagram
  */
 export const config = { runtime: "edge" };
 
 const BASE = (
-  process.env.EXPORT_BASE_URL ??
-  "https://storage.googleapis.com/tobe-filebuckets/creator-exports"
+  process.env.CREATOR_SERVICE_URL ??
+  "https://creator-trust-service-o7x7yagetq-el.a.run.app"
 ).replace(/\/$/, "");
 
 export default async function handler(req: Request): Promise<Response> {
@@ -21,7 +18,7 @@ export default async function handler(req: Request): Promise<Response> {
     return json({ error: "handle and platform (instagram|youtube) are required" }, 400);
   }
 
-  const upstream = `${BASE}/${encodeURIComponent(`${handle}-${platform}-detail`)}.json`;
+  const upstream = `${BASE}/creator-trust-profile?handle=${encodeURIComponent(handle)}&platform=${platform}`;
   const res = await fetch(upstream, { headers: { accept: "application/json" } });
   if (res.status === 404 || res.status === 403) return json({ error: "Profile not found" }, 404);
   if (!res.ok) return json({ error: `Upstream error (${res.status})` }, 502);

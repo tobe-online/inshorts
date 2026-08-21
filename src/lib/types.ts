@@ -57,11 +57,14 @@ export interface ComplianceOverviewRow {
 export interface AssetRow {
   id: string;
   platform: Platform;
-  url: string;
+  url?: string | undefined;
+  post_url?: string | undefined;
   thumbnail_url?: string | undefined;
-  published_at: string;
+  published_at?: string | undefined;
+  assessed_at?: string | undefined;
   language?: string | undefined;
   action?: "green" | "grey" | "black" | undefined;
+  trust_action?: string | undefined;
   aqs?: number | undefined;
   wow?: number | undefined;
   summary?: string | undefined;

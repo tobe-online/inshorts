@@ -11,6 +11,7 @@ import PlatformPerformanceCard from "@/components/PlatformPerformanceCard";
 import ComplianceOverviewCard from "@/components/ComplianceOverviewCard";
 import ProfileSkeleton from "@/components/ProfileSkeleton";
 import EmptyState from "@/components/EmptyState";
+import AssetsTable from "@/components/AssetsTable";
 
 const PLATFORMS: Platform[] = ["instagram", "youtube"];
 
@@ -144,7 +145,7 @@ export default function InfluencerProfile() {
 
             {data.diagnostics ? <DiagnosticsSection diagnostics={data.diagnostics} /> : null}
 
-            {(data.platform_performance?.length || data.compliance_overview?.length) && (
+{(data.platform_performance?.length || data.compliance_overview?.length) && (
               <div className="grid gap-5 lg:grid-cols-2">
                 {data.platform_performance?.length ? (
                   <PlatformPerformanceCard rows={data.platform_performance} />
@@ -155,7 +156,7 @@ export default function InfluencerProfile() {
               </div>
             )}
 
-
+            {data.assets?.length ? <AssetsTable assets={data.assets} /> : null}
 
             {data.meta?.generated_at ? (
               <p className="pt-2 text-xs text-muted">

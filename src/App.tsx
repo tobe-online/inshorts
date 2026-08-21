@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Topbar from "@/components/Topbar";
+import Footer from "@/components/Footer";
 import InfluencerProfile from "@/routes/InfluencerProfile";
 import EmptyState from "@/components/EmptyState";
 
@@ -17,11 +18,16 @@ function NotAvailable() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Topbar />
-      <Routes>
-        <Route path="/influencers/:handle" element={<InfluencerProfile />} />
-        <Route path="*" element={<NotAvailable />} />
-      </Routes>
+      <div className="flex min-h-screen flex-col">
+        <Topbar />
+        <div className="flex-1">
+          <Routes>
+            <Route path="/influencers/:handle" element={<InfluencerProfile />} />
+            <Route path="*" element={<NotAvailable />} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }
