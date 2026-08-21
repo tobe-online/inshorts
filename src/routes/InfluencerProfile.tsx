@@ -9,9 +9,9 @@ import IdentityCard from "@/components/IdentityCard";
 import DiagnosticsSection from "@/components/DiagnosticsSection";
 import PlatformPerformanceCard from "@/components/PlatformPerformanceCard";
 import ComplianceOverviewCard from "@/components/ComplianceOverviewCard";
+import AssetsTable from "@/components/AssetsTable";
 import ProfileSkeleton from "@/components/ProfileSkeleton";
 import EmptyState from "@/components/EmptyState";
-import AssetsTable from "@/components/AssetsTable";
 
 const PLATFORMS: Platform[] = ["instagram", "youtube"];
 
@@ -25,9 +25,9 @@ function ShieldIcon() {
 }
 
 export default function InfluencerProfile() {
-  const { handle = "" } = useParams();
-  const [search] = useSearchParams();
-  const raw = search.get("platform");
+  const { handle = "" } = useParams<{ handle: string }>();
+  const [searchParams] = useSearchParams();
+  const raw = searchParams.get("platform") ?? undefined;
   const platform = (PLATFORMS.includes(raw as Platform) ? (raw as Platform) : null) as Platform | null;
 
   const [data, setData] = useState<TrustProfile | null>(null);
@@ -67,14 +67,24 @@ export default function InfluencerProfile() {
 
   const [summary, ...detail] = splitSections(data);
 
+  const fromUrl = `/influencers/${handle}${platform ? `?platform=${platform}` : ""}`;
+
   return (
     <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-8">
-      <h1 className="flex items-center gap-2.5 text-xl font-semibold text-ink">
-        <span className="text-good">
-          <ShieldIcon />
-        </span>
-        Basic Creator Trust Profile
-      </h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="flex items-center gap-2.5 text-xl font-semibold text-ink">
+          <span className="text-good">
+            <ShieldIcon />
+          </span>
+          Basic Creator Trust Profile
+        </h1>
+        <a
+          href={`/glossary?from=${encodeURIComponent(fromUrl)}`}
+          className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-[#f7f7f5]"
+        >
+          Glossary
+        </a>
+      </div>
 
       <div className="mt-6">
         {status === "loading" && <ProfileSkeleton />}
@@ -116,43 +126,35 @@ export default function InfluencerProfile() {
                 ))}
               </div>
             ) : (
-            <>
-            <div className="grid gap-5 lg:grid-cols-[1fr_1fr_1.6fr]">
-              <Card className="flex flex-col">
-                <CardTitle tooltip={data.bcts.tooltip}>Basic Creator Trust Score (BCTS)</CardTitle>
-                <div className="flex flex-1 items-center justify-center">
-                  <DonutGauge
-                    value={data.bcts.score}
-                    verdict={data.bcts.verdict}
-                    tone={data.bcts.tone}
-                  />
+              <>
+                <div className="grid gap-5 lg:grid-cols-[1fr_1fr_1.6fr]">
+                  <Card className="flex flex-col">
+                    <CardTitle tooltip={data.bcts.tooltip}>Basic Creator Trust Score (BCTS)</CardTitle>
+                    <div className="flex flex-1 items-center justify-center">
+                      <DonutGauge value={data.bcts.score} verdict={data.bcts.verdict} tone={data.bcts.tone} />
+                    </div>
+                  </Card>
+
+                  {summary ? <SectionCard section={summary} barTone="#16a34a" /> : <div />}
+                  {detail[0] ? <SectionCard section={detail[0]} /> : <div />}
                 </div>
-              </Card>
 
-              {summary ? <SectionCard section={summary} barTone="#16a34a" /> : <div />}
-              {detail[0] ? <SectionCard section={detail[0]} /> : <div />}
-            </div>
-
-            {detail.length > 1 && (
-              <div className="grid gap-5 lg:grid-cols-3">
-                {detail.slice(1).map((s) => (
-                  <SectionCard key={s.id} section={s} />
-                ))}
-              </div>
-            )}
-            </>
+                {detail.length > 1 && (
+                  <div className="grid gap-5 lg:grid-cols-3">
+                    {detail.slice(1).map((s) => (
+                      <SectionCard key={s.id} section={s} />
+                    ))}
+                  </div>
+                )}
+              </>
             )}
 
             {data.diagnostics ? <DiagnosticsSection diagnostics={data.diagnostics} /> : null}
 
-{(data.platform_performance?.length || data.compliance_overview?.length) && (
+            {(data.platform_performance?.length || data.compliance_overview?.length) && (
               <div className="grid gap-5 lg:grid-cols-2">
-                {data.platform_performance?.length ? (
-                  <PlatformPerformanceCard rows={data.platform_performance} />
-                ) : null}
-                {data.compliance_overview?.length ? (
-                  <ComplianceOverviewCard rows={data.compliance_overview} />
-                ) : null}
+                {data.platform_performance?.length ? <PlatformPerformanceCard rows={data.platform_performance} /> : null}
+                {data.compliance_overview?.length ? <ComplianceOverviewCard rows={data.compliance_overview} /> : null}
               </div>
             )}
 

@@ -54,21 +54,44 @@ export interface ComplianceOverviewRow {
   icon: "check" | "flag" | "alert" | "tag";
 }
 
+export interface AssetDecisionExplainability {
+  summary?: string | undefined;
+  what_was_claimed?: string[] | undefined;
+  entities_of_concern?: string[] | undefined;
+  evidence_status?: { status?: string | undefined; reason?: string | undefined } | undefined;
+  regulatory_triggers?: string[] | undefined;
+  risk_drivers?: string[] | undefined;
+  revision_guidance?: string[] | undefined;
+  classification?: string | undefined;
+  recommended_action?: string | undefined;
+  final_decision_score?: number | undefined;
+  category?: string | undefined;
+  subcategory_label?: string | undefined;
+  generated_at?: string | undefined;
+}
+
 export interface AssetRow {
   id: string;
   platform: Platform;
+  adhoc_post_id?: string | undefined;
   url?: string | undefined;
+  /** Upstream field name for the post permalink. */
   post_url?: string | undefined;
   thumbnail_url?: string | undefined;
   published_at?: string | undefined;
   assessed_at?: string | undefined;
   language?: string | undefined;
   action?: "green" | "grey" | "black" | undefined;
+  /** Upstream trust action, e.g. "GREEN" | "GREY" | "BLACK". */
   trust_action?: string | undefined;
   aqs?: number | undefined;
   wow?: number | undefined;
   summary?: string | undefined;
+  /** Per-asset report payload from the Creator Trust Service. */
+  decision_explainability?: AssetDecisionExplainability | undefined;
 }
+
+
 
 export interface TrustProfile {
   schema_version: number;
@@ -103,4 +126,23 @@ export interface TrustProfile {
   compliance_summary?: Record<string, string | number | null> | null | undefined;
   content_diagnostics?: Record<string, string | number | null> | null | undefined;
   meta?: { generated_at?: string | undefined; source?: string | undefined } | undefined;
+}
+
+/** Glossary (tooltips) payload from the Creator Trust Service. */
+export interface GlossaryItem {
+  label: string;
+  text: string;
+  field_path?: string | string[] | null | undefined;
+}
+
+export interface GlossarySection {
+  id: string;
+  title: string;
+  footnote?: string | null | undefined;
+  items: GlossaryItem[];
+}
+
+export interface GlossaryPayload {
+  constants?: Record<string, number | string | null> | null | undefined;
+  sections: GlossarySection[];
 }

@@ -1,3 +1,9 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "version": 2,
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/profile", "destination": "/api/profile.ts" },
+    { "source": "/api/tooltips", "destination": "/api/tooltips.ts" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

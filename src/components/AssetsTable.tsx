@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { AssetRow } from "@/lib/types";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import AssetReportPanel from "@/components/AssetReportPanel";
 
 const ACTION_STYLE: Record<string, { dot: string; text: string }> = {
   GREEN: { dot: "#16a34a", text: "text-ink" },
@@ -8,11 +9,17 @@ const ACTION_STYLE: Record<string, { dot: string; text: string }> = {
   BLACK: { dot: "#111111", text: "text-ink" },
 };
 
-const assetUrl = (a: AssetRow) => a.post_url ?? a.url ?? "";
-const trustLabel = (a: AssetRow) => (a.trust_action ?? a.action ?? "").toUpperCase();
+function assetUrl(a: AssetRow) {
+  return a.post_url ?? a.url ?? "";
+}
+
+function trustLabel(a: AssetRow) {
+  return (a.trust_action ?? a.action ?? "").toUpperCase();
+}
 
 export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
   const [selected, setSelected] = useState<AssetRow | null>(null);
+
   if (!assets.length) return null;
 
   return (
@@ -40,8 +47,12 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
                 <tr key={a.id} className="border-b border-line/70 last:border-0">
                   <td className="max-w-[420px] px-5 py-3 sm:px-6">
                     {url ? (
-                      <a href={url} target="_blank" rel="noreferrer"
-                         className="block truncate text-xs font-medium text-good hover:underline">
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block truncate text-xs font-medium text-good hover:underline"
+                      >
                         {url}
                       </a>
                     ) : (
@@ -55,8 +66,11 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right sm:px-6">
-                    <button type="button" onClick={() => setSelected(a)}
-                            className="text-xs font-medium text-good hover:underline">
+                    <button
+                      type="button"
+                      onClick={() => setSelected(a)}
+                      className="text-xs font-medium text-good hover:underline"
+                    >
                       View Report
                     </button>
                   </td>
@@ -68,12 +82,14 @@ export default function AssetsTable({ assets }: { assets: AssetRow[] }) {
       </div>
 
       <Sheet open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
-        <SheetContent side="right" className="w-full sm:max-w-md">
+        <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-xl">
           <SheetHeader>
-            <SheetTitle>Complete report</SheetTitle>
+            <SheetTitle>Score Report</SheetTitle>
           </SheetHeader>
+          {selected ? <AssetReportPanel asset={selected} /> : null}
         </SheetContent>
       </Sheet>
     </div>
+
   );
 }

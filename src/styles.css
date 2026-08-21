@@ -1,36 +1,62 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --color-paper: #f7f7f5;
-  --color-card: #ffffff;
-  --color-line: #e6e6e1;
-  --color-ink: #111111;
-  --color-muted: #6b7280;
-  --color-good: #16a34a;
-  --color-watch: #f59e0b;
-  --color-risk: #dc2626;
-  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
-  --radius-xl: 12px;
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #111111;
+    --card: #ffffff;
+    --card-foreground: #111111;
+    --popover: #ffffff;
+    --popover-foreground: #111111;
+    --primary: #111111;
+    --primary-foreground: #ffffff;
+    --secondary: #f3f4f6;
+    --secondary-foreground: #111111;
+    --muted: #f3f4f6;
+    --muted-foreground: #6b7280;
+    --accent: #f3f4f6;
+    --accent-foreground: #111111;
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+    --border: #e6e6e1;
+    --input: #e6e6e1;
+    --ring: #111111;
+    --radius: 0.625rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    background: #f7f7f5;
+    color: #111111;
+    font-family: "Inter Tight", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+    -webkit-font-smoothing: antialiased;
+  }
 }
 
-html, body, #root { height: 100%; }
-
-body {
-  background: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+@layer components {
+  .card {
+    @apply rounded-xl border border-line bg-white shadow-sm;
+  }
 }
 
-.tnum { font-variant-numeric: tabular-nums; }
-
-.card {
-  background: var(--color-card);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+@layer utilities {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @media print {
-  .no-print { display: none !important; }
+  .no-print {
+    display: none !important;
+  }
 }

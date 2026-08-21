@@ -1,41 +1,54 @@
 /**
- * Vercel Edge proxy for the creator trust service.
+ * Vercel Edge handler for the Creator Trust Service proxy.
+ *
  * GET /api/profile?handle=berojgarphotowala&platform=instagram
  */
-export const config = { runtime: "edge" };
+export default async function handler(request: Request): Promise<Response> {
+  const base = (
+    process.env.CREATOR_SERVICE_URL ?? "https://creator-trust-service-o7x7yagetq-el.a.run.app"
+  ).replace(/\/$/, "");
 
-const BASE = (
-  process.env.CREATOR_SERVICE_URL ??
-  "https://creator-trust-service-o7x7yagetq-el.a.run.app"
-).replace(/\/$/, "");
-
-export default async function handler(req: Request): Promise<Response> {
-  const url = new URL(req.url);
+  const url = new URL(request.url);
   const handle = (url.searchParams.get("handle") ?? "").trim();
   const platform = (url.searchParams.get("platform") ?? "").trim();
 
   if (!handle || (platform !== "instagram" && platform !== "youtube")) {
-    return json({ error: "handle and platform (instagram|youtube) are required" }, 400);
+    return new Response(
+      JSON.stringify({ error: "handle and platform (instagram|youtube) are required" }),
+      { status: 400, headers: { "content-type": "application/json" } }
+    );
   }
 
-  const upstream = `${BASE}/creator-trust-profile?handle=${encodeURIComponent(handle)}&platform=${platform}`;
-  const res = await fetch(upstream, { headers: { accept: "application/json" } });
-  if (res.status === 404 || res.status === 403) return json({ error: "Profile not found" }, 404);
-  if (!res.ok) return json({ error: `Upstream error (${res.status})` }, 502);
+  const upstream = `${base}/creator-trust-profile?handle=${encodeURIComponent(handle)}&platform=${platform}`;
 
-  return new Response(await res.text(), {
-    status: 200,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "access-control-allow-origin": "*",
-      "cache-control": "public, max-age=300, s-maxage=900",
-    },
-  });
-}
+  try {
+    const r = await fetch(upstream, { headers: { accept: "application/json" } });
+    if (r.status === 404 || r.status === 403) {
+      return new Response(JSON.stringify({ error: "Profile not found" }), {
+        status: 404,
+        headers: { "content-type": "application/json" },
+      });
+    }
+    if (!r.ok) {
+      return new Response(JSON.stringify({ error: `Upstream error (${r.status})` }), {
+        status: 502,
+        headers: { "content-type": "application/json" },
+      });
+    }
 
-function json(body: unknown, status: number) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "content-type": "application/json", "access-control-allow-origin": "*" },
-  });
+    const text = await r.text();
+    return new Response(text, {
+      status: 200,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "access-control-allow-origin": "*",
+        "cache-control": "public, max-age=300, s-maxage=900",
+      },
+    });
+  } catch {
+    return new Response(JSON.stringify({ error: "Upstream request failed" }), {
+      status: 502,
+      headers: { "content-type": "application/json" },
+    });
+  }
 }

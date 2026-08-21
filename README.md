@@ -1,53 +1,44 @@
-# Influencer Trust Profile (standalone SPA)
+Influencer Trust Profile — Vite + Vercel package
 
-Renders the Basic Creator Trust Profile at `/influencers/:handle?platform=instagram|youtube`.
-All numbers, labels, tones and tooltips come from the API payload — the UI holds no scoring logic.
+A local, Vite-based single-page application that mirrors the creator trust profile pages built in the Lovable project. It is designed to run locally with `npm run dev` and to be deployed on Vercel.
 
-## Run
+Project structure
+- `api/profile.ts` — Vercel Edge handler that proxies `/api/profile` to the Creator Trust Service.
+- `api/tooltips.ts` — Vercel Edge handler that proxies `/api/tooltips` to the glossary endpoint.
+- `src/routes/InfluencerProfile.tsx` — Creator profile page (`/influencers/:handle`).
+- `src/routes/Glossary.tsx` — Glossary page (`/glossary`).
+- `src/components/` — Reusable profile components, including the asset score-report side panel.
+- `src/lib/` — Types, formatter helpers, upstream adapter, and API client.
+- `public/data/` — Bundled JSON fixtures for offline dev fallback.
 
-```bash
+Environment variables
+Create a `.env` file from `.env.example`:
+
+VITE_CREATOR_SERVICE_URL=https://creator-trust-service-o7x7yagetq-el.a.run.app
+
+For Vercel (server-side edge handlers), set the same value as:
+CREATOR_SERVICE_URL=https://creator-trust-service-o7x7yagetq-el.a.run.app
+
+Local development
+
 npm install
-cp .env.example .env
-npm run dev      # http://localhost:5173/influencers/berojgarphotowala?platform=instagram
-```
+npm run dev
 
-With `VITE_CREATOR_SERVICE_URL` empty the app reads local fixtures from
-`public/data/<platform>/<handle>.json`, so you can develop before the API exists.
+Open http://localhost:5173/influencers/mai.saurav?platform=instagram
 
-## Deploy to Vercel
+Build
 
-1. Push this folder to a Git repo and import it in Vercel (framework preset: Vite).
-2. Set `VITE_CREATOR_SERVICE_URL` (and `VITE_API_KEY` if needed) in Project Settings → Environment Variables.
-3. `vercel.json` already rewrites all paths to `index.html` so deep links work.
+npm run build
 
-## API contract
+Preview the production build with `npm run preview`.
 
-`GET {VITE_CREATOR_SERVICE_URL}/creator-trust-profile?handle=<handle>&platform=<instagram|youtube>`
+Vercel deployment
+1. Push the project to a Git repository.
+2. Import the project in Vercel and use the framework preset “Vite”.
+3. Add the environment variable `CREATOR_SERVICE_URL` in the Vercel dashboard.
+4. Deploy. The `api/` folder is served automatically as Vercel Edge functions via `vercel.json`.
 
-- `200` → profile JSON (see `src/lib/types.ts` and the fixtures in `public/data/`)
-- `404` → renders the "Profile Not Available" state
-- CORS must allow the Vercel origin.
-
-If the key must stay server-side, deploy `api/profile.ts` and point
-`VITE_CREATOR_SERVICE_URL` at your own domain root (`/api/profile?handle=...&platform=...`).
-
-## Data source
-
-Profiles are read from the Creator Trust Service:
-
-```
-https://creator-trust-service-o7x7yagetq-el.a.run.app/creator-trust-profile?handle=<handle>&platform=<instagram|youtube>
-e.g. handle=berojgarphotowala&platform=instagram
-```
-
-The service supports CORS, so the browser can call it directly. A same-origin proxy
-`/api/profile?handle=<handle>&platform=<instagram|youtube>` (Vercel edge function in
-`api/profile.ts`, mirrored by a Vite middleware in dev/preview) is still available.
-Override the upstream with `CREATOR_SERVICE_URL` on the server, or bypass the proxy entirely with
-`VITE_CREATOR_SERVICE_URL` if you host a CORS-enabled copy.
-
-## Routes
-
-Only one page exists: `/influencers/:handle?platform=instagram|youtube`.
-Every other path, and a missing/invalid `platform`, renders a "not available" card.
-The site is `noindex, nofollow`.
+Notes
+- The same-origin proxies (`/api/profile` and `/api/tooltips`) are used for local dev and Vercel to avoid CORS.
+- The Vite dev server also proxies these paths to the service configured in `VITE_CREATOR_SERVICE_URL`.
+- The side panel close button and backdrop click rely on the custom `src/components/ui/sheet.tsx` implementation.
