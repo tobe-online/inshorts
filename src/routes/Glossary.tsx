@@ -66,18 +66,6 @@ export default function Glossary() {
         What each metric in the Basic Creator Trust Profile means and how it is derived.
       </p>
 
-      {c && (c["LOOKBACK_DAYS"] || c["MIN_ASSETS"] || c["CORPUS_SIZE"]) ? (
-        <p className="mt-3 text-xs text-muted">
-          Assessment window:{" "}
-          {[
-            c["LOOKBACK_DAYS"] ? `${c["LOOKBACK_DAYS"]}-day lookback` : null,
-            c["CORPUS_SIZE"] ? `corpus size ${c["CORPUS_SIZE"]}` : null,
-            c["MIN_ASSETS"] ? `minimum ${c["MIN_ASSETS"]} assessed assets` : null,
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </p>
-      ) : null}
 
       <div className="mt-6">
         {status === "loading" && (
